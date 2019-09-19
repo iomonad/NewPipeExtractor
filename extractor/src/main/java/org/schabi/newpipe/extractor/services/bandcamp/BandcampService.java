@@ -14,6 +14,7 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -53,8 +54,8 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization) {
-        return null;
+    public SearchExtractor getSearchExtractor(SearchQueryHandler query, Localization localization) {
+        return new BandcampSearchExtractor(this, query, localization);
     }
 
     @Override
