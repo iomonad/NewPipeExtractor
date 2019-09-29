@@ -1,6 +1,5 @@
 package org.schabi.newpipe.extractor.services.bandcamp.handlers;
 
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandlerFactory;
 import org.schabi.newpipe.extractor.utils.Parser;
 

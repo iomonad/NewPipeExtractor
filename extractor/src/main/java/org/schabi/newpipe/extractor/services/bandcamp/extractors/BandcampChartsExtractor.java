@@ -3,7 +3,6 @@ package org.schabi.newpipe.extractor.services.bandcamp.extractors;
 import org.schabi.newpipe.extractor.Downloader;
 import org.schabi.newpipe.extractor.StreamingService;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
-import org.schabi.newpipe.extractor.exceptions.ParsingException;
 import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.linkhandler.ListLinkHandler;
 import org.schabi.newpipe.extractor.stream.StreamInfoItem;
@@ -27,15 +26,11 @@ public class BandcampChartsExtractor extends KioskExtractor<StreamInfoItem> {
     }
 
     @Override
-    public void onFetchPage(@Nonnull Downloader downloader) throws IOException, ExtractionException {
-
-    }
+    public void onFetchPage(@Nonnull Downloader downloader) { }
 
     @Nonnull
     @Override
-    public String getName() throws ParsingException {
-        return null;
-    }
+    public String getName() { return getId(); }
 
     @Nonnull
     @Override
@@ -50,6 +45,12 @@ public class BandcampChartsExtractor extends KioskExtractor<StreamInfoItem> {
 
     @Override
     public InfoItemsPage<StreamInfoItem> getPage(String pageUrl) throws IOException, ExtractionException {
-        return null;
+        if (pageUrl == null || pageUrl.isEmpty()) {
+            throw new ExtractionException(new IllegalArgumentException("Page url is null or empty"));
+        }
+
+        StreamInfoItemsCollector collector = new StreamInfoItemsCollector(getServiceId());
+        String nextpage = BandcampParsingHelpers.getStreamsFromUrl(collector, pageUrl);
+        return new InfoItemsPage<>(collector, nextpage);
     }
 }
