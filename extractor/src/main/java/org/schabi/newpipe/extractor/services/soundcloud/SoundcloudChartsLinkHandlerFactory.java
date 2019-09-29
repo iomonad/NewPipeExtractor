@@ -9,7 +9,6 @@ public class SoundcloudChartsLinkHandlerFactory extends ListLinkHandlerFactory {
     private final String TOP_URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top)?/?([#?].*)?$";
     private final String URL_PATTERN = "^https?://(www\\.|m\\.)?soundcloud.com/charts(/top|/new)?/?([#?].*)?$";
 
-
     @Override
     public String getId(String url) {
         if (Parser.isMatch(TOP_URL_PATTERN, url.toLowerCase())) {

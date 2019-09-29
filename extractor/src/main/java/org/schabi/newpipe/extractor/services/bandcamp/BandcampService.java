@@ -92,7 +92,8 @@ public class BandcampService extends StreamingService {
         final BandcampChartsLinkHandlerFactory lh = new BandcampChartsLinkHandlerFactory();
         try {
             list.addKioskEntry(chartFactory, lh, "Top Charts");
-            list.setDefaultKiosk("New Charts");
+            list.addKioskEntry(chartFactory, lh, "New Charts");
+            list.setDefaultKiosk("Top Charts");
         } catch (Exception e) {
             throw new ExtractionException(e);
         }
