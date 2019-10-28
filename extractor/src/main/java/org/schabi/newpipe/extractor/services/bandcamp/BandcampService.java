@@ -5,6 +5,7 @@ import org.schabi.newpipe.extractor.SuggestionExtractor;
 import org.schabi.newpipe.extractor.channel.ChannelExtractor;
 import org.schabi.newpipe.extractor.comments.CommentsExtractor;
 import org.schabi.newpipe.extractor.exceptions.ExtractionException;
+import org.schabi.newpipe.extractor.kiosk.KioskExtractor;
 import org.schabi.newpipe.extractor.kiosk.KioskList;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandler;
 import org.schabi.newpipe.extractor.linkhandler.LinkHandlerFactory;
@@ -14,6 +15,9 @@ import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandler;
 import org.schabi.newpipe.extractor.linkhandler.SearchQueryHandlerFactory;
 import org.schabi.newpipe.extractor.playlist.PlaylistExtractor;
 import org.schabi.newpipe.extractor.search.SearchExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampChartsExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.extractors.BandcampSearchExtractor;
+import org.schabi.newpipe.extractor.services.bandcamp.handlers.BandcampChartsLinkHandlerFactory;
 import org.schabi.newpipe.extractor.stream.StreamExtractor;
 import org.schabi.newpipe.extractor.subscription.SubscriptionExtractor;
 import org.schabi.newpipe.extractor.utils.Localization;
@@ -53,8 +57,8 @@ public class BandcampService extends StreamingService {
     }
 
     @Override
-    public SearchExtractor getSearchExtractor(SearchQueryHandler queryHandler, Localization localization) {
-        return null;
+    public SearchExtractor getSearchExtractor(SearchQueryHandler query, Localization localization) {
+        return new BandcampSearchExtractor(this, query, localization);
     }
 
     @Override
@@ -69,7 +73,29 @@ public class BandcampService extends StreamingService {
 
     @Override
     public KioskList getKioskList() throws ExtractionException {
-        return null;
+        KioskList.KioskExtractorFactory chartFactory = new KioskList.KioskExtractorFactory() {
+            @Override
+            public KioskExtractor createNewKiosk(StreamingService streamingService,
+                                                 String url,
+                                                 String id,
+                                                 Localization local)
+                    throws ExtractionException {
+                return new BandcampChartsExtractor(BandcampService.this,
+                        new BandcampChartsLinkHandlerFactory().fromUrl(url), id, local);
+            }
+        };
+
+        KioskList list = new KioskList(getServiceId());
+
+        final BandcampChartsLinkHandlerFactory lh = new BandcampChartsLinkHandlerFactory();
+        try {
+            list.addKioskEntry(chartFactory, lh, "Top Charts");
+            list.addKioskEntry(chartFactory, lh, "New Charts");
+            list.setDefaultKiosk("Top Charts");
+        } catch (Exception e) {
+            throw new ExtractionException(e);
+        }
+        return list;
     }
 
     @Override
